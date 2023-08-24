@@ -42,13 +42,15 @@ def main(data_folder, out_folder, split):
 if __name__ == '__main__':
     cadc_splits = EasyDict(yaml.safe_load(open(Path(__file__).resolve().parent / "cadc_splits.yaml")))
 
+    args.data_folder = Path(args.data_folder)
+    args.output_folder = Path(args.output_folder)
+
     # Build path to `output folder`
     if args.test:
-        print(args.test)
-        args.output_folder=Path(args.output_folder ) / 'validation'
+        args.output_folder = args.output_folder / 'validation'
         split = cadc_splits.val
     else:
-        args.output_folder=Path(args.output_folder) / 'training'
+        args.output_folder = args.output_folder / 'training'
         split = cadc_splits.train
 
     args.output_folder = args.output_folder / 'ts_info'
@@ -56,4 +58,4 @@ if __name__ == '__main__':
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    main(Path(args.data_folder), args.output_folder, split)
+    main(args.data_folder, args.output_folder, split)
