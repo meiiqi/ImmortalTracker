@@ -47,17 +47,16 @@ def main(output_folder, infos):
 
         # Iterate over labeled frames
         ego_infos = {}
+        first_frame = seq_infos[0]
+        starts_with_sweeps = (first_frame['sweeps'][0]['pose'] is not None) and (first_frame['sweeps'][1]['pose'] is not None)
+        start_idx = 2 if starts_with_sweeps else 0
+
         for i, info in enumerate(seq_infos):
-            if (info['sweeps'][0]['pose'] is not None) and (info['sweeps'][1]['pose'] is not None):
+            frame_num = start_idx + 3 * i
+
+            if starts_with_sweeps or (i > 0):
                 assert info['sweeps'][0]['time_lag'] < info['sweeps'][1]['time_lag']
 
-                starts_with_sweeps = True
-                frame_num = 2 + 3 * i
-            else:
-                starts_with_sweeps = False
-                frame_num = 3 * i
-
-            if starts_with_sweeps:
                 # Iterate over unlabeled frames (2 prior sweeps)
                 for j, sweep_info in reversed(list(enumerate(info['sweeps']))):
                     sweep_frame_num = str(frame_num - (j + 1))
