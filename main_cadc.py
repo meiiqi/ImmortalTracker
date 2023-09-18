@@ -54,6 +54,8 @@ def main(data_folder, det_folder, result_folder, summary_folder, config_path, ob
     # Only supporting 'Car' class for now
     if obj_type == 'Car':
         type_token = 1
+    else:
+        raise Exception(f"obj_type {obj_type} unsupported for now.")
 
     # Get sequence names
     file_names = sorted(os.listdir(os.path.join(data_folder, 'ego_info')))
@@ -65,16 +67,9 @@ def main(data_folder, det_folder, result_folder, summary_folder, config_path, ob
         out_file = summary_folder / file_name
         print(f"Saving MOT output to {out_file}")
 
-        # import pdb
-        # pdb.set_trace()
-
         data_loader = CADCLoader(configs, [type_token], seq_name, data_folder, det_folder, start_frame)
 
-        # import pdb
-        # pdb.set_trace()
-
         ids, bboxes, states, types = sequence_mot(configs, data_loader, file_index)
-        # pdb.set_trace()
 
         np.savez_compressed(out_file,
             ids=ids, bboxes=bboxes, states=states)
